@@ -1,0 +1,42 @@
+version: '3.7'
+
+services:
+  faust.worker.1:
+    build:
+      context: ..
+      dockerfile: ./docker/Dockerfile
+    container_name: faust.worker.1
+    networks:
+      main-net:
+        ipv4_address: 172.30.1.10
+        aliases:
+          - "faust.worker.1"
+    environment:
+      dataDir: /workers/worker1
+    entrypoint:
+      - "/workers/config/entrypoint.sh"
+    volumes:
+      - ../:/workers
+    restart: on-failure
+
+  faust.worker.2:
+    build:
+      context: ..
+      dockerfile: ./docker/Dockerfile
+    container_name: faust.worker.2
+    networks:
+      main-net:
+        ipv4_address: 172.30.1.11
+        aliases:
+          - "faust.worker.2"
+    environment:
+      dataDir: /workers/worker2
+    entrypoint:
+      - "/workers/config/entrypoint.sh"
+    volumes:
+      - ../:/workers
+    restart: on-failure
+
+networks:
+  main-net:
+    external: true

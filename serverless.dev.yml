@@ -1,0 +1,68 @@
+service: producer
+configValidationMode: error
+
+provider:
+  name: aws
+  runtime: python3.9
+  region: eu-central-1
+  architecture: arm64
+  deploymentBucket:
+    blockPublicAccess: true
+  lambdaHashingVersion: "20201221"
+
+  environment:
+    PLATFORM: 'local'
+    LOG_LEVEL: DEBUG
+    STAGE: dev
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - logs:CreateLogGroup
+            - logs:CreateLogStream
+            - logs:PutLogEvents
+          Resource:
+            - "*"
+
+functions:
+  report_like:
+    handler: src.producer.count_video_like
+    reservedConcurrency: 1000
+    memorySize: 128
+    timeout: 30
+    events:
+      - http:
+          path: /videos/{video_id}/likes
+          method: post
+          private: false
+
+  get_videos_metadata:
+    handler: src.producer.get_available_videos
+    reservedConcurrency: 1000
+    memorySize: 128
+    timeout: 30
+    events:
+      - http:
+          path: /videos/metadata
+          method: get
+          private: false
+
+custom:
+  logRetentionInDays: 14
+  pythonRequirements:
+    usePoetry: false
+
+package:
+  patterns:
+    - '!node_modules/**'
+    - '!venv/**'
+    - '!.dynamodb/**'
+    - '!.idea/**'
+    - '!__pycache__/**'
+    - '!documentation/**'
+    - '!.serverless/**'
+
+plugins:
+  - serverless-offline
+  - serverless-python-requirements

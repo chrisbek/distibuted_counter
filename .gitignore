@@ -1,0 +1,13 @@
+__pycache__
+.idea
+.venv
+node_modules
+kafka_files-1
+distirbuted-video-clicks-counter-data
+tumbling-data
+tumbling2-data
+tumbling3-data
+.env
+serverless.yml
+yarn-error.log
+zoo
