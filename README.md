@@ -37,7 +37,7 @@ Finally, the cumulative count of identifiers is exposed in three kafka topics:
 
 ## Initial configuration
 ```
-git clone
+git clone git@github.com:chrisbek/distributed-counter.git
 docker network create -d bridge --attachable main-net --subnet 172.30.0.0/16 --gateway 172.30.0.255
 cd /path/to/project
 cp ./config/.env.dev ./config/.env -v
@@ -53,7 +53,7 @@ make start-kafka
 make start-faust
 ```
 
-## Inspect containers
+## Inspect containers' logs
 You can always inspect the containers' logs using the following commands:
 ```
 docker logs --follow zookeeper
@@ -96,3 +96,16 @@ serverless offline start --stage={stage}
 
 > Note that [yarn](https://classic.yarnpkg.com/lang/en/docs/install/#debian-stable) 
 > and [poetry](https://python-poetry.org/docs/#installation), and python >= 3.6 are required in order to start the consumer.
+
+# Consuming the cumulative data
+One can use the [kafka_consumer_websockets](https://github.com/chrisbek/kafka_consumer_websockets) in order to start
+a SocketIO server in order to consume cumulative count of identifiers from the `video_aggregations_1`, `video_aggregations_5`,
+and `video_aggregations_10` topics, and get these events through a websocket.
+
+# Consuming and creating video likes through a UI
+One can use the [distributed-counter-frontend](https://github.com/chrisbek/distributed-counter-frontend), a UI written
+in react together with `kafka_consumer_websockets`, and this project, in order to:
+- view a visual representation of videos based on video-identifiers
+- configure the creation of likes per minute per video through the UI.
+- generate the above number of likes per minute (per video) through the UI.
+- inspect the live update of cumulative likes per video for 1', 5', and 10' through the UI.
